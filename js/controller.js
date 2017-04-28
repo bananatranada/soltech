@@ -170,6 +170,8 @@
 		var that = this;
 		that.model.removeWhen(function (data) {
 			return data.completed === true;
+		}, function (data) {
+			that.view.render('showEntries', data);
 		});
 		that._filter();
 

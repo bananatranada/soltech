@@ -86,16 +86,17 @@
 	 *
 	 * @param {function} callback The callback to fire when the removal is complete.
 	 */
-	Model.prototype.removeWhen = function (callback) {
+	Model.prototype.removeWhen = function (when, callback) {
 		this.storage.findAll(function (data) {
 			console.log(data);
 			console.log('storage', this.storage)
 			data.forEach(function (todo) {
-				if (callback(todo)) {
-					this.storage.remove(todo.id);
+				if (when(todo)) {
+					this.storage.remove(todo.id, function () {});
 					console.log('storage', this.storage)
 				}
-			}, this);
+			}.bind(this));
+			this.read(callback);
 		}.bind(this));
 	};
 
