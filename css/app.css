@@ -166,7 +166,7 @@ input[type="checkbox"] {
   display: block;
   width: 506px;
   padding: 13px 17px 12px 17px;
-  margin: 0 0 0 43px;
+  margin: 0 0 0 14px;
 }
 
 #todo-list li.editing .view {
@@ -178,7 +178,7 @@ input[type="checkbox"] {
   cursor: hand;
   white-space: pre;
   word-break: break-word;
-  padding: 15px 60px 15px 15px;
+  padding: 15px 15px 15px 15px;
   margin-left: 10px;
   display: block;
   line-height: 1.2;
