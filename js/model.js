@@ -82,6 +82,24 @@
 	};
 
 	/**
+	 * Removes if it meets a condition
+	 *
+	 * @param {function} callback The callback to fire when the removal is complete.
+	 */
+	Model.prototype.removeWhen = function (callback) {
+		this.storage.findAll(function (data) {
+			console.log(data);
+			console.log('storage', this.storage)
+			data.forEach(function (todo) {
+				if (callback(todo)) {
+					this.storage.remove(todo.id);
+					console.log('storage', this.storage)
+				}
+			}, this);
+		}.bind(this));
+	};
+
+	/**
 	 * WARNING: Will remove ALL data from storage.
 	 *
 	 * @param {function} callback The callback to fire when the storage is wiped.
@@ -101,7 +119,9 @@
 
 		this.storage.findAll(function (data) {
 			data.forEach(function (todo) {
-				todos.active++;
+				if (!todo.completed) {
+					todos.active++;
+				}
 
 				todos.total++;
 			});

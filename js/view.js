@@ -39,6 +39,7 @@
     };
 
     View.prototype._editItem = function (id, title) {
+      console.log('edit')
         var listItem = qs('[data-id="' + id + '"]');
 
         if (!listItem) {
@@ -74,18 +75,14 @@
 
     View.prototype._toggleCompleteItem = function (id, title, completed) {
         var listItem = qs('[data-id="' + id + '"]');
-
         if (!listItem) {
             return;
         }
-        if (listItem.className.test('completed')) {
-          listItem.className.remove('completed');
+        if (listItem.className.indexOf('completed') !== -1) {
+          listItem.className = listItem.className.replace('completed', '');
         } else {
-          listItem.className.add('completed');
+          listItem.className = listItem.className + ' completed';
         }
-        qsa('label', listItem).forEach(function (label) {
-            label.textContent = title;
-        });
     };
 
     View.prototype.render = function (viewCmd, parameter) {
@@ -160,13 +157,6 @@
         });
     };
 
-    //View.prototype._bindItemToggleComplete = function (handler) {
-   //     var that = this;
-    //    $live('#todo-list li .edit', 'keypress', function (event) {
-    //        console.log('hi')
-    //    });
-    //};
-
     View.prototype.bind = function (event, handler) {
         var that = this;
         if (event === 'newTodo') {
@@ -175,7 +165,7 @@
             });
 
         } else if (event === 'itemEdit') {
-            $live('#todo-list li label', 'dblclick', function () {
+            $live('#todo-list .edit-button', 'click', function () {
                 handler({id: that._itemId(this)});
             });
 
@@ -190,10 +180,12 @@
         } else if (event === 'itemEditCancel') {
             that._bindItemEditCancel(handler);
         } else if (event === 'itemToggleComplete') {
-            //that._bindItemToggleComplete(handler);
             $live('#todo-list li label', 'click', function () {
-              console.log('toggle')
                 handler({id: that._itemId(this)});
+            });
+        } else if (event === 'clearCompleted') {
+            $live('#clear-completed', 'click', function () {
+                handler();
             });
         }
     };

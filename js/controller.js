@@ -37,6 +37,9 @@
 			that.toggleCompleteItem(item.id);
 		});
 
+		that.view.bind('clearCompleted', function () {
+			that.clearCompleted();
+		});
 	}
 
 	/**
@@ -67,7 +70,9 @@
 	Controller.prototype.showActive = function () {
 		var that = this;
 		that.model.read(function (data) {
-			that.view.render('showEntries', data);
+			that.view.render('showEntries', data.filter(function (todo) {
+				return todo.completed === false;
+			}));
 		});
 	};
 
@@ -138,7 +143,7 @@
 		that._filter();
 	};
 
-    /**
+  /**
 	 * By giving it an ID it'll find the DOM element matching that ID,
 	 * complete it and strike-through the item on the DOM then update its status to completed in storage.
 	 *
@@ -149,13 +154,25 @@
 		var that = this;
 		that.model.read(id, function (data) {
       var todo = data[0];
-      if (todo.completed) {
-          that.model.update(id, {id: todo.id, title: todo.title, completed: false});
-      } else {
-          that.model.update(id, {id: todo.id, title: todo.title, completed: true});
-      }
+      that.model.update(id, {id: todo.id, title: todo.title, completed: !todo.completed});
 			that.view.render('toggleCompleteItem', {id: todo.id, title: todo.title, completed: todo.completed});
 		});
+		that._filter();
+
+	};
+
+	/**
+	 * Clears all completed todos
+	 *
+	 */
+	Controller.prototype.clearCompleted = function () {
+		console.log('clearCompleted1')
+		var that = this;
+		that.model.removeWhen(function (data) {
+			return data.completed === true;
+		});
+		that._filter();
+
 	};
 
 	/**
@@ -198,6 +215,8 @@
 
 		if (currentPage === '') {
 			this._activeRoute = 'All';
+		} else if (currentPage === 'active') {
+			this._activeRoute = 'Active';
 		}
 
 		this._filter();
